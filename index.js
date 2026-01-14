@@ -104,6 +104,15 @@ app.get('/cards', auth, (req, res) => {
     res.json(filtered);
 });
 
+app.post('/cards/create', auth, (req, res) => {
+    const newCard = req.body;
+    const cards = JSON.parse(fs.readFileSync(CARDS_FILE));
+    newCard.id = cards.length > 0 ? cards[cards.length - 1].id + 1 : 1;
+    cards.push(newCard);
+    fs.writeFileSync(CARDS_FILE, JSON.stringify(cards, null, 2));
+    res.status(201).json(newCard);
+});
+
 
 
 app.use((err, req, res, next) => {
