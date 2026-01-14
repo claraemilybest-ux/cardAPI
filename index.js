@@ -113,7 +113,7 @@ app.post('/cards/create', auth, (req, res) => {
     res.status(201).json(newCard);
 });
 
-app.get('/cards/:id', auth, (req, res) => {
+app.put('/cards/:id', auth, (req, res) => {
     const cardId = parseInt(req.params.id, 10);
         const cards = JSON.parse(fs.readFileSync(CARDS_FILE));
         const idx = cards.findIndex(c => c.id === cardId);
@@ -133,7 +133,15 @@ app.get('/cards/:id', auth, (req, res) => {
         fs.writeFileSync(CARDS_FILE, JSON.stringify(cards, null, 2));
         return res.json(updatedCard);
 });
-
+app.delete('/cards/:id', auth, (req, res) => {
+    const cardId = parseInt(req.params.id, 10);
+    const cards = JSON.parse(fs.readFileSync(CARDS_FILE));
+    const idx = cards.findIndex(c => c.id === cardId);
+    if (idx === -1) return res.status(404).json({ message: 'Card not found' });
+    cards.splice(idx, 1);
+    fs.writeFileSync(CARDS_FILE, JSON.stringify(cards, null, 2));
+    res.status(204).send();
+});
 
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
