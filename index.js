@@ -28,12 +28,12 @@ server.on('error', (err) => {
 const auth = expressjwt({ secret: JWT_SECRET, algorithms: ['HS256'] });
 const users = [
     { 
-        id: 1, 
+        userId: 1, 
         username: "user1", 
         password: "pass1" 
     },
     { 
-        id: 2, 
+        userId: 2, 
         username: "user2", 
         password: "pass2"
     }
@@ -53,12 +53,57 @@ app.post('/getToken', (req, res) => {
         return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({id: user.id}, JWT_SECRET, { 
+    const token = jwt.sign({ userId: user.userId }, JWT_SECRET, { 
         algorithm: 'HS256', 
         expiresIn: '2h'
     });
     return res.json({ token });
 });
+
+app.get('/cards', auth, (req, res) => {
+    
+    const cards = JSON.parse(fs.readFileSync(CARDS_FILE));
+    const filters = req.query || {};
+    const keys = Object.keys(filters);
+    if (keys.length === 0) return res.json(cards);
+    let filtered = cards;
+
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const value = filters[key];
+        const next = [];
+
+        for (let j = 0; j < filtered.length; j++) {
+            const card = filtered[j];
+            const field = card[key];
+            if (field == null) continue;
+
+            let match = false;
+            if (Array.isArray(field)) {
+                for (let k = 0; k < field.length; k++) {
+                    if (String(field[k]).toLowerCase().includes(String(value).toLowerCase())) {
+                        match = true;
+                        break;
+                    }
+                }
+            } else if (typeof field === 'object') {
+                if (JSON.stringify(field).toLowerCase().includes(String(value).toLowerCase())) {
+                    match = true;
+                }
+            } else {
+                if (String(field).toLowerCase().includes(String(value).toLowerCase())) {
+                    match = true;
+                }
+            }
+
+            if (match) next.push(card);
+        }
+
+        filtered = next;
+    }
+    res.json(filtered);
+});
+
 
 
 app.use((err, req, res, next) => {

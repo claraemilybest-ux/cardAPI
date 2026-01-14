@@ -5,3 +5,12 @@ Content-Type: application/json
     "username": "user1", 
     "password": "pass1"
 }
+###
+
+GET http://localhost:3000/cards
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2ODM2MzM0MiwiZXhwIjoxNzY4MzcwNTQyfQ.c6Yz5My0X--aH86NCVx61z9HH5PT3_5uZoaD4htc06A
+
+###
+
+GET http://localhost:3000/cards?set=Base%20Set&type=Creature&rarity=Common
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2ODM2MzM0MiwiZXhwIjoxNzY4MzcwNTQyfQ.c6Yz5My0X--aH86NCVx61z9HH5PT3_5uZoaD4htc06A
