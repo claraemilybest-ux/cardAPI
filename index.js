@@ -113,6 +113,26 @@ app.post('/cards/create', auth, (req, res) => {
     res.status(201).json(newCard);
 });
 
+app.get('/cards/:id', auth, (req, res) => {
+    const cardId = parseInt(req.params.id, 10);
+        const cards = JSON.parse(fs.readFileSync(CARDS_FILE));
+        const idx = cards.findIndex(c => c.id === cardId);
+        if (idx === -1) return res.status(404).json({ message: 'Card not found' });
+
+        const updates = req.body || {};
+        const desiredId = ('id' in updates) ? parseInt(updates.id, 10) : cardId;
+        if (isNaN(desiredId)) return res.status(400).json({ message: 'Invalid id' });
+
+        if (desiredId !== cardId && cards.some(c => c.id === desiredId)) {
+            return res.status(400).json({ message: 'id must be unique' });
+        }
+
+        const updatedCard = Object.assign({}, cards[idx], updates, { id: desiredId });
+        cards[idx] = updatedCard;
+
+        fs.writeFileSync(CARDS_FILE, JSON.stringify(cards, null, 2));
+        return res.json(updatedCard);
+});
 
 
 app.use((err, req, res, next) => {
