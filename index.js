@@ -101,7 +101,7 @@ app.get('/cards', auth, (req, res) => {
 
         filtered = next;
     }
-    res.json(filtered);
+    return res.json(filtered);
 });
 
 app.post('/cards/create', auth, (req, res) => {
