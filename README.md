@@ -208,3 +208,44 @@ If id 3 already exists the server returns 400 ("id must be unique").
 ## Notes
 - Default JWT secret is `your_jwt_secret` — change in production using the JWT_SECRET env var.
 - This project uses synchronous file reads/writes for simplicity; consider moving to an async DB or file operations for production.
+
+# cardAPI — Docker usage
+
+Build the image (from repo root):
+```bash
+cd /Users/clara/Code/Backend/cardAPI
+docker build -t cardapi:latest .
+```
+
+Or build directly with the path:
+```bash
+docker build -t cardapi:latest /Users/clara/Code/Backend/cardAPI
+```
+
+Run the container (detached, publish exposed ports automatically, name the container):
+```bash
+docker run -d -P --name cardapi cardapi:latest
+```
+
+Find the host port mapped to container port 3000:
+```bash
+docker port cardapi 3000
+# example output: 0.0.0.0:32768
+```
+
+Open the site in your browser using the mapped host port (example):
+```
+http://localhost:32768/
+```
+For API endpoints, e.g.:
+```
+http://localhost:32768/getToken
+```
+
+Helpful commands:
+```bash
+# follow logs
+docker logs -f cardapi
+
+# stop and remove
+docker stop cardapi
