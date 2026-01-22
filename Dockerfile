@@ -12,6 +12,8 @@ WORKDIR /app
 # Only copy package files first (keeps layer cacheable)
 COPY package*.json ./
 
+COPY index.js .
+
 # Install deps (fallback to npm install if npm ci fails)
 RUN npm install
 

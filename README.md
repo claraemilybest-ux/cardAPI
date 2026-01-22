@@ -213,7 +213,7 @@ If id 3 already exists the server returns 400 ("id must be unique").
 
 Build the image (from repo root):
 ```bash
-cd /Users/clara/Code/Backend/cardAPI
+cd cardAPI
 docker build -t cardapi:latest .
 ```
 
@@ -240,6 +240,31 @@ http://localhost:32768/
 For API endpoints, e.g.:
 ```
 http://localhost:32768/getToken
+```
+
+Deploying the Stack
+```bash
+docker-compose up -d
+```
+
+Scaling Out the Services
+First Service
+```bash
+docker service scale app_first-service=7
+```
+Second Service
+```bash
+docker service scale app_second-service=7
+```
+
+Scaling In the Services
+First Service
+```bash
+docker service scale app_first-service=2
+```
+Second Service
+```bash
+docker service scale app_second-service=1
 ```
 
 Helpful commands:
